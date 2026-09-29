@@ -1,3 +1,4 @@
+import time
 from functools import lru_cache
 
 from fastapi import HTTPException
@@ -24,6 +25,31 @@ def get_client():
     )
 
 
+def _is_retryable_error(exc: Exception) -> bool:
+    """
+    Return True for temporary Gemini server/rate-limit errors.
+    """
+
+    error_text = str(exc).upper()
+
+    retryable_codes = [
+        "503",
+        "UNAVAILABLE",
+        "500",
+        "INTERNAL",
+        "502",
+        "504",
+        "DEADLINE_EXCEEDED",
+        "429",
+        "RESOURCE_EXHAUSTED",
+    ]
+
+    return any(
+        code in error_text
+        for code in retryable_codes
+    )
+
+
 async def generate_text(
     prompt: str,
     *,
@@ -32,36 +58,66 @@ async def generate_text(
 
     client = get_client()
 
-    try:
+    max_retries = 3
 
-        response = client.models.generate_content(
-            model=settings.gemini_model,
-            contents=prompt,
-            config={
-                "temperature": temperature
-            },
-        )
+    # Retry delays: 2s -> 4s -> 8s
+    retry_delays = [2, 4, 8]
 
-        text = getattr(
-            response,
-            "text",
-            None
-        )
+    for attempt in range(max_retries + 1):
 
-        if not text:
+        try:
 
-            raise RuntimeError(
-                "Gemini returned an empty response."
+            response = client.models.generate_content(
+                model=settings.gemini_model,
+                contents=prompt,
+                config={
+                    "temperature": temperature
+                },
             )
 
-        return text.strip()
+            text = getattr(
+                response,
+                "text",
+                None
+            )
 
-    except HTTPException:
-        raise
+            if not text:
 
-    except Exception as exc:
+                raise RuntimeError(
+                    "Gemini returned an empty response."
+                )
 
-        raise HTTPException(
-            status_code=502,
-            detail=f"Gemini request failed: {exc}",
-        ) from exc
+            return text.strip()
+
+        except HTTPException:
+            raise
+
+        except Exception as exc:
+
+            # If this is a temporary Gemini error,
+            # retry the request.
+            if (
+                _is_retryable_error(exc)
+                and attempt < max_retries
+            ):
+
+                delay = retry_delays[attempt]
+
+                print(
+                    f"Gemini temporary error detected. "
+                    f"Retrying in {delay} seconds... "
+                    f"(attempt {attempt + 1}/{max_retries})"
+                )
+
+                time.sleep(delay)
+
+                continue
+
+            # Final failure
+            raise HTTPException(
+                status_code=502,
+                detail=(
+                    f"Gemini request failed after "
+                    f"{attempt + 1} attempt(s): {exc}"
+                ),
+            ) from exc
