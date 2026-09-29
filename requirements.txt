@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+jinja2
+pydantic
+pydantic-settings
+python-dotenv
+google-genai
+transformers
+torch
+starlette<1.0.0

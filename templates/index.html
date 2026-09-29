@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>EduGenie - AI Learning Assistant</title>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+
+</head>
+<script src="/static/js/app.js"></script>
+
+<body>
+
+    <!-- =====================================================
+         Header
+    ====================================================== -->
+
+    <header class="navbar">
+
+        <div class="container navbar-inner">
+
+            <div class="brand">
+
+                <div class="brand-icon">
+                    🎓
+                </div>
+
+                <div>
+
+                    <h1>EduGenie</h1>
+
+                    <p>
+                        AI Learning Assistant
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="status">
+
+                <span class="status-dot"></span>
+
+                AI Assistant
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         Main
+    ====================================================== -->
+
+    <main class="container main-content">
+
+        <!-- Hero -->
+
+        <section class="hero">
+
+            <div class="hero-badge">
+                ✨ Generative AI Education Platform
+            </div>
+
+            <h2>
+                Learn smarter with
+                <span>EduGenie</span>
+            </h2>
+
+            <p>
+                Ask questions, understand difficult concepts,
+                generate quizzes, summarize study material,
+                and create personalized learning paths.
+            </p>
+
+        </section>
+
+
+        <!-- =================================================
+             Application Card
+        ================================================== -->
+
+        <section class="app-card">
+
+            <!-- Task selector -->
+
+            <div class="task-selector">
+
+                <button
+                    class="task-button active"
+                    data-task="qa"
+                >
+                    <span>💬</span>
+                    Ask Question
+                </button>
+
+                <button
+                    class="task-button"
+                    data-task="explain"
+                >
+                    <span>🧠</span>
+                    Explain Concept
+                </button>
+
+                <button
+                    class="task-button"
+                    data-task="quiz"
+                >
+                    <span>📝</span>
+                    Generate Quiz
+                </button>
+
+                <button
+                    class="task-button"
+                    data-task="summarize"
+                >
+                    <span>📚</span>
+                    Summarize
+                </button>
+
+                <button
+                    class="task-button"
+                    data-task="learn"
+                >
+                    <span>🗺️</span>
+                    Learning Path
+                </button>
+
+            </div>
+
+
+            <!-- =================================================
+                 Form
+            ================================================== -->
+
+            <div class="workspace">
+
+                <div class="input-section">
+
+                    <div class="section-heading">
+
+                        <div>
+
+                            <span
+                                class="section-label"
+                                id="input-label"
+                            >
+                                Your Question
+                            </span>
+
+                            <h3 id="input-title">
+                                Ask EduGenie anything
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Question / topic -->
+
+                    <textarea id="question" placeholder="Ask your question..."></textarea>
+
+
+
+                    <!-- Quiz topic -->
+
+                    <div
+                        id="quiz-options"
+                        class="extra-fields hidden"
+                    >
+
+                        <label>
+                            Topic
+                        </label>
+
+                        <input
+                            id="quiz-topic"
+                            type="text"
+                            placeholder="Optional topic"
+                        >
+
+                    </div>
+
+
+                    <!-- Learning options -->
+
+                    <div
+                        id="learning-options"
+                        class="extra-fields hidden"
+                    >
+
+                        <div class="field-grid">
+
+                            <div>
+
+                                <label>
+                                    Level
+                                </label>
+
+                                <select id="learning-level">
+
+                                    <option value="beginner">
+                                        Beginner
+                                    </option>
+
+                                    <option value="intermediate">
+                                        Intermediate
+                                    </option>
+
+                                    <option value="advanced">
+                                        Advanced
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div>
+
+                                <label>
+                                    Hours per week
+                                </label>
+
+                                <input
+                                    id="learning-hours"
+                                    type="number"
+                                    min="1"
+                                    max="40"
+                                    value="5"
+                                >
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Action -->
+
+                    <button
+                        id="generate-button"
+                        class="primary-button"
+                    >
+
+                        <span id="button-icon">
+                            ✨
+                        </span>
+
+                        <span id="button-text">
+                            Get Answer
+                        </span>
+
+                    </button>
+
+                </div>
+
+
+                <!-- =================================================
+                     Result
+                ================================================== -->
+
+                <div class="result-section">
+
+                    <div class="result-header">
+
+                        <div>
+
+                            <span class="section-label">
+                                AI Response
+                            </span>
+
+                            <h3>
+                                Your result
+                            </h3>
+
+                        </div>
+
+                        <button
+                            id="copy-button"
+                            class="copy-button"
+                            disabled
+                        >
+                            Copy
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="result"
+                        class="result-box empty"
+                    >
+
+                        <div class="empty-state">
+
+                            <div class="empty-icon">
+                                ✨
+                            </div>
+
+                            <h4>
+                                Ready to help
+                            </h4>
+
+                            <p>
+                                Enter your content and choose
+                                an AI learning tool.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             Features
+        ================================================== -->
+
+        <section class="features">
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    💬
+                </div>
+
+                <h3>
+                    AI Q&A
+                </h3>
+
+                <p>
+                    Ask educational questions and receive
+                    clear explanations.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    🧠
+                </div>
+
+                <h3>
+                    Concept Explanation
+                </h3>
+
+                <p>
+                    Understand difficult concepts
+                    using simple language.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    📝
+                </div>
+
+                <h3>
+                    Smart Quizzes
+                </h3>
+
+                <p>
+                    Generate multiple-choice questions
+                    from your study material.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    🗺️
+                </div>
+
+                <h3>
+                    Learning Paths
+                </h3>
+
+                <p>
+                    Build structured learning plans
+                    based on your goals.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         Footer
+    ====================================================== -->
+
+    <footer>
+
+        <div class="container">
+
+            <p>
+                EduGenie · AI-powered learning assistant
+            </p>
+
+        </div>
+
+    </footer>
+
+
+</body>
+
+</html>
